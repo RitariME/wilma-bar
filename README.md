@@ -1,6 +1,6 @@
 # wilma-bar
 Shows you when your current lesson ends, or your next lesson starts. In your favorite statusbar.
-![alt text](image.png)
+![alt text](2022-08-19_17:50:02.png)
 
 # Installation
 ```
