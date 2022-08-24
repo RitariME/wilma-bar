@@ -2,16 +2,46 @@ use std::fs;
 mod wilma;
 mod overview;
 
+fn get_schedule() -> Vec<wilma::Schedule> {
+    let mut download = false;
+    let dir = format!("{}/.local/share/wilma-bar", std::env::var("HOME").unwrap());
+    let date_now = chrono::Local::now().naive_local().date();
+    let dir_exist = fs::metadata(&dir).is_ok();
+    if dir_exist == false {
+        fs::create_dir_all(&dir).unwrap();
+    }
+    let time_exist = fs::metadata(format!("{}/time", &dir)).is_ok();
+    if !time_exist {
+        download = true;
+    }
+    else {
+        let date = chrono::NaiveDate::parse_from_str(&fs::read_to_string(format!("{}/time",&dir)).unwrap().trim(), "%Y-%m-%d");
+        //let date = chrono::NaiveDate::parse_from_str("2022-08-24", "%Y-%m-%d");
+        if date_now < date.unwrap() {
+            download = true;
+        }
+    }
+    if download == true {
+        fs::write(format!("{}/time", &dir), date_now.format("%Y-%m-%d").to_string()).unwrap();
+
+        let credentials_data = fs::read_to_string(format!("{}/.config/wilma-tui/config", std::env::var("HOME").unwrap())).unwrap();
+        let credentials: Vec<&str> = credentials_data.lines().collect();
+
+        let user = credentials[0];
+        let password = credentials[1];
+        let base_url = credentials[2];
+
+        let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
+        let data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &login_info.slug, &base_url).unwrap();
+        fs::write(format!("{}/data.json", &dir), serde_json::to_string(&data).unwrap()).unwrap();
+    }
+    let data: Vec<wilma::Schedule> = serde_json::from_str(&fs::read_to_string(format!("{}/data.json", &dir)).unwrap()).unwrap();
+    return data;
+}
+
 fn main() {
-    let data = fs::read_to_string(format!("{}/.config/wilma-tui/config", std::env::var("HOME").unwrap())).unwrap();
-    let credentials: Vec<&str> = data.lines().collect();
+    let data = get_schedule();
 
-    let user = credentials[0];
-    let password = credentials[1];
-    let base_url = credentials[2];
-
-    let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
-    let data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &login_info.slug, &base_url).unwrap();
     let time_now = chrono::Local::now().time();
     //let time_now = chrono::NaiveTime::parse_from_str("11:50","%H:%M").unwrap();
     let mut message = String::new();

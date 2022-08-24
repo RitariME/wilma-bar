@@ -1,5 +1,7 @@
 use crate::overview;
 use chrono::Datelike;
+use serde_derive::Deserialize;
+use serde_derive::Serialize;
 
 fn find_str(page: &String, start: &str) -> Option<String> {
     let first = page.find(&start)?;
@@ -50,7 +52,7 @@ impl LoginInfo {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Schedule {
     pub name: String,
     pub teacher: String,
