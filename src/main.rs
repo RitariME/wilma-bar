@@ -17,7 +17,8 @@ fn get_schedule() -> Vec<wilma::Schedule> {
     else {
         let date = chrono::NaiveDate::parse_from_str(&fs::read_to_string(format!("{}/time",&dir)).unwrap().trim(), "%Y-%m-%d");
         //let date = chrono::NaiveDate::parse_from_str("2022-08-24", "%Y-%m-%d");
-        if date_now < date.unwrap() {
+        println!("{} {}", date_now, date.unwrap());
+        if date_now > date.unwrap() {
             download = true;
         }
     }
@@ -54,10 +55,10 @@ fn main() {
             let hours = minutes / 60;
             minutes = minutes % 60;
             if hours > 0 {
-                message = format!("{} Lesson ends in {} hours and {} minutes", lesson.name, hours, minutes);
+                message = format!("{} Lesson ends in {} h and {} m", lesson.name, hours, minutes);
             }
             else {
-                message = format!("{} Lesson ends in {} minutes", lesson.name, minutes);
+                message = format!("{} Lesson ends in {} m", lesson.name, minutes);
             }
             break;
         }
@@ -66,10 +67,10 @@ fn main() {
             let hours = minutes / 60;
             minutes = minutes % 60;
             if hours > 0 {
-                message = format!("{} Lesson starts in {} hours and {} minutes", lesson.name, hours, minutes);
+                message = format!("{} Lesson starts in {} h and {} m", lesson.name, hours, minutes);
             }
             else {
-                message = format!("{} Lesson starts in {} minutes", lesson.name, minutes);
+                message = format!("{} Lesson starts in {} m", lesson.name, minutes);
             }
             break;
         }
