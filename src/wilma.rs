@@ -99,7 +99,7 @@ impl Schedule {
                 long_caption: "".to_string(), schedule_visible: false
             }))[0].caption.clone(),
             time: format!("{}–{}", sch.start, sch.end)};
-            if sch.day == current_day as i64{
+            if sch.groups[0].id != None && sch.day == current_day as i64{
                 today_sche.push(x);
             }
         }

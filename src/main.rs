@@ -55,10 +55,10 @@ fn main() {
             let hours = minutes / 60;
             minutes = minutes % 60;
             if hours > 0 {
-                message = format!("{} Lesson ends in {} h and {} m", lesson.name, hours, minutes);
+                message = format!("{} ends in {} h and {} m", lesson.name, hours, minutes);
             }
             else {
-                message = format!("{} Lesson ends in {} m", lesson.name, minutes);
+                message = format!("{} ends in {} m", lesson.name, minutes);
             }
             break;
         }
@@ -67,10 +67,10 @@ fn main() {
             let hours = minutes / 60;
             minutes = minutes % 60;
             if hours > 0 {
-                message = format!("{} Lesson starts in {} h and {} m", lesson.name, hours, minutes);
+                message = format!("{} starts in {} h and {} m", lesson.name, hours, minutes);
             }
             else {
-                message = format!("{} Lesson starts in {} m", lesson.name, minutes);
+                message = format!("{} starts in {} m", lesson.name, minutes);
             }
             break;
         }
