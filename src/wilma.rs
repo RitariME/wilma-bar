@@ -1,4 +1,4 @@
-use crate::overview;
+use crate::schedule;
 use chrono::Datelike;
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
@@ -55,56 +55,33 @@ impl LoginInfo {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Schedule {
     pub name: String,
-    pub teacher: String,
-    pub room: String,
     pub time: String
 }
 
 impl Schedule {
-    pub fn new(wilma2sid: &str, formkey: &str,
-               slug: &Option<String>, base_url: &str) -> Result<Vec<Schedule>, Box<dyn std::error::Error>> {
+    pub fn new(wilma2sid: &str, formkey: &str, base_url: &str) -> Vec<Schedule> {
+        let day = chrono::Local::today().format("%d-%m-%Y").to_string();
+        let mut today_sche: Vec<Schedule> = Vec::new();
+        let current_day = chrono::offset::Local::now().date().weekday().number_from_monday();
+        let primusid = formkey.split(':').collect::<Vec<&str>>()[1];
+
         let client = reqwest::blocking::Client::builder()
             .redirect(reqwest::redirect::Policy::none())
-            .build()?;
-        let url;
-        match slug {
-            Some(x) => url = format!("{}/!{}/overview", base_url, x),
-            None => url = format!("{}/overview", base_url)
-        }
+            .build().unwrap();
 
-        let day = chrono::Local::today().format("%Y-%m-%d").to_string();
-
-        let params = [
-            ("date", day.as_str()),
-            ("getfullmonth", "true"),
-            ("formkey", formkey)
-        ];
-        let root = client.post(url)
+        let root = client.get(format!("{}/schedule/export/students/{}?date={}", base_url, primusid, day))
             .header("Cookie", format!("Wilma2SID={}", wilma2sid))
-            .form(&params)
-            .send().expect("Can't get schedule").json::<overview::Root>().expect("Can't parse schedule");
-
-        let mut today_sche: Vec<Schedule> = Vec::new();
-
-        let current_day = chrono::offset::Local::now().date().weekday().number_from_monday();
-        
-        for sch in root.schedule {
-            let x = Schedule { name: sch.groups[0].caption.clone(),
-            teacher: sch.groups[0].teachers.as_ref().unwrap_or(
-                &vec!(overview::Teacher { id: 0, caption: "".to_string(),
-                long_caption: "".to_string(), schedule_visible: false
-            }))[0].long_caption.clone(),
-            room: sch.groups[0].rooms.as_ref().unwrap_or(
-                &vec!(overview::Room { id: 0, caption: "".to_string(),
-                long_caption: "".to_string(), schedule_visible: false
-            }))[0].caption.clone(),
-            time: format!("{}–{}", sch.start, sch.end)};
-            if sch.groups[0].id != None && sch.day == current_day as i64{
-                today_sche.push(x);
+            .send().expect("Can't get schedule").json::<schedule::Root>().expect("Can't parse schedule");
+        for v in root.schedule {
+            if v.day as u32 == current_day {
+                let schedule = Schedule {
+                    time: format!("{}-{}", v.start, v.end),
+                    name: v.groups[0].short_caption.clone(),
+                };
+                today_sche.push(schedule);
             }
         }
+        today_sche
 
-
-        Ok(today_sche)
     }
 }

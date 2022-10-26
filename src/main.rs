@@ -1,6 +1,6 @@
 use std::fs;
 mod wilma;
-mod overview;
+mod schedule;
 
 fn get_schedule() -> Vec<wilma::Schedule> {
 
@@ -39,7 +39,7 @@ fn get_schedule() -> Vec<wilma::Schedule> {
         fs::write(format!("{}/time", &dir), date_now.format("%Y-%m-%d").to_string()).unwrap();
 
         let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
-        let data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &login_info.slug, &base_url).unwrap();
+        let data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &base_url);
         fs::write(format!("{}/data.json", &dir), serde_json::to_string(&data).unwrap()).unwrap();
     }
     let data: Vec<wilma::Schedule> = serde_json::from_str(&fs::read_to_string(format!("{}/data.json", &dir)).unwrap()).unwrap();
@@ -53,7 +53,8 @@ fn main() {
     //let time_now = chrono::NaiveTime::parse_from_str("11:50","%H:%M").unwrap();
     let mut message = String::new();
     for lesson in data {
-        let (start_str,end_str) = lesson.time.split_once('–').unwrap();
+        //println!("{:#?}", lesson);
+        let (start_str,end_str) = lesson.time.split_once('-').unwrap();
         let start = chrono::NaiveTime::parse_from_str(start_str,"%H:%M").unwrap();
         let end = chrono::NaiveTime::parse_from_str(end_str,"%H:%M").unwrap();
         if time_now > start && time_now < end {
