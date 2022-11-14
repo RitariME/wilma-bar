@@ -40,6 +40,7 @@ fn get_schedule() -> Vec<wilma::Schedule> {
 
         let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
         let data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &base_url);
+        //println!("data {:#?}", data);
         fs::write(format!("{}/data.json", &dir), serde_json::to_string(&data).unwrap()).unwrap();
     }
     let data: Vec<wilma::Schedule> = serde_json::from_str(&fs::read_to_string(format!("{}/data.json", &dir)).unwrap()).unwrap();

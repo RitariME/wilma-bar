@@ -73,10 +73,10 @@ impl Schedule {
             .header("Cookie", format!("Wilma2SID={}", wilma2sid))
             .send().expect("Can't get schedule").json::<schedule::Root>().expect("Can't parse schedule");
         for v in root.schedule {
-            if v.day as u32 == current_day {
+            if v.day.unwrap_or(100) as u32 == current_day {
                 let schedule = Schedule {
-                    time: format!("{}-{}", v.start, v.end),
-                    name: v.groups[0].short_caption.clone(),
+                    time: format!("{}-{}", v.start.unwrap_or("00:00".to_string()), v.end.unwrap_or("00:00".to_string())),
+                    name: v.groups[0].short_caption.clone().unwrap_or("no".to_string()),
                 };
                 today_sche.push(schedule);
             }

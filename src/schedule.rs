@@ -14,31 +14,31 @@ pub struct Root {
 #[serde(rename_all = "camelCase")]
 pub struct Schedule {
     #[serde(rename = "ReservationID")]
-    pub reservation_id: i64,
+    pub reservation_id: Option<i64>,
     #[serde(rename = "ScheduleID")]
-    pub schedule_id: i64,
+    pub schedule_id: Option<i64>,
     #[serde(rename = "Day")]
-    pub day: i64,
+    pub day: Option<i64>,
     #[serde(rename = "Start")]
-    pub start: String,
+    pub start: Option<String>,
     #[serde(rename = "End")]
-    pub end: String,
+    pub end: Option<String>,
     #[serde(rename = "Color")]
-    pub color: String,
+    pub color: Option<String>,
     #[serde(rename = "X1")]
-    pub x1: i64,
+    pub x1: Option<i64>,
     #[serde(rename = "Y1")]
-    pub y1: i64,
+    pub y1: Option<i64>,
     #[serde(rename = "X2")]
-    pub x2: i64,
+    pub x2: Option<i64>,
     #[serde(rename = "Y2")]
-    pub y2: i64,
+    pub y2: Option<i64>,
     #[serde(rename = "Class")]
-    pub class: String,
+    pub class: Option<String>,
     #[serde(rename = "AllowEdit")]
-    pub allow_edit: bool,
+    pub allow_edit: Option<bool>,
     #[serde(rename = "AllowAddMoveRemove")]
-    pub allow_add_move_remove: bool,
+    pub allow_add_move_remove: Option<bool>,
     #[serde(rename = "Groups")]
     pub groups: Vec<Group>,
 }
@@ -47,17 +47,17 @@ pub struct Schedule {
 #[serde(rename_all = "camelCase")]
 pub struct Group {
     #[serde(rename = "Id")]
-    pub id: i64,
+    pub id: Option<i64>,
     #[serde(rename = "CourseId")]
-    pub course_id: i64,
+    pub course_id: Option<i64>,
     #[serde(rename = "ShortCaption")]
-    pub short_caption: String,
+    pub short_caption: Option<String>,
     #[serde(rename = "Caption")]
-    pub caption: String,
+    pub caption: Option<String>,
     #[serde(rename = "FullCaption")]
-    pub full_caption: String,
+    pub full_caption: Option<String>,
     #[serde(rename = "Class")]
-    pub class: String,
+    pub class: Option<String>,
     #[serde(rename = "Teachers")]
     pub teachers: Vec<Teacher>,
     #[serde(rename = "Rooms")]
@@ -68,35 +68,35 @@ pub struct Group {
 #[serde(rename_all = "camelCase")]
 pub struct Teacher {
     #[serde(rename = "Id")]
-    pub id: i64,
+    pub id: Option<i64>,
     #[serde(rename = "Caption")]
-    pub caption: String,
+    pub caption: Option<String>,
     #[serde(rename = "LongCaption")]
-    pub long_caption: String,
+    pub long_caption: Option<String>,
     #[serde(rename = "ScheduleVisible")]
-    pub schedule_visible: bool,
+    pub schedule_visible: Option<bool>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Room {
     #[serde(rename = "Id")]
-    pub id: i64,
+    pub id: Option<i64>,
     #[serde(rename = "Caption")]
-    pub caption: String,
+    pub caption: Option<String>,
     #[serde(rename = "LongCaption")]
-    pub long_caption: String,
+    pub long_caption: Option<String>,
     #[serde(rename = "ScheduleVisible")]
-    pub schedule_visible: bool,
+    pub schedule_visible: Option<bool>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Term {
     #[serde(rename = "Name")]
-    pub name: String,
+    pub name: Option<String>,
     #[serde(rename = "StartDate")]
-    pub start_date: String,
+    pub start_date: Option<String>,
     #[serde(rename = "EndDate")]
-    pub end_date: String,
+    pub end_date: Option<String>,
 }
