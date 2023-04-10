@@ -59,9 +59,9 @@ pub struct Group {
     #[serde(rename = "Class")]
     pub class: Option<String>,
     #[serde(rename = "Teachers")]
-    pub teachers: Vec<Teacher>,
+    pub teachers: Option<Vec<Teacher>>,
     #[serde(rename = "Rooms")]
-    pub rooms: Vec<Room>,
+    pub rooms: Option<Vec<Room>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
