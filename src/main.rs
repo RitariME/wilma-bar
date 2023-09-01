@@ -43,12 +43,12 @@ fn get_schedule() -> Option<Vec<wilma::Schedule>> {
 
         let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
         let mut data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &base_url);
-        /*for lesson in &mut data {
+        for lesson in &mut data {
             let (start_str,end_str) = lesson.time.split_once('-').unwrap();
             if start_str == "11:00" && end_str == "12:15" {
                 lesson.time = "11:00-12:40".to_string();
             }
-        }*/
+        }
 
         fs::write(format!("{}/data.json", &dir), serde_json::to_string(&data).unwrap()).unwrap();
     }

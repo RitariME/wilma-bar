@@ -19,6 +19,7 @@ impl LoginInfo {
     pub fn login(user: &str, password: &str, base_url: &str) -> Result<LoginInfo, Box<dyn std::error::Error>> {
         let client = reqwest::blocking::Client::builder()
             .redirect(reqwest::redirect::Policy::none())
+            .cookie_store(true)
             .build()?;
         let res = client.get(format!("{}/index_json", base_url))
             .send().expect("Can't /index_json");
@@ -28,18 +29,17 @@ impl LoginInfo {
         let params = [
             ("Login", user),
             ("Password", password),
+            ("submit", "Kirjaudu+sisään"),
             ("SESSIONID", &login_id)
         ];
         let res2 = client.post(format!("{}/login", base_url))
             .form(&params)
             .send().expect("Can't /login");
-        //if res2.text()?.is_empty() == true { panic!("Can't login"); }
         let cookie = res2.cookies().last().unwrap();
         let wilma2sid_ = String::from(cookie.value());
         if wilma2sid_ == "" { panic!("No wilma2sid, probably wrong credentials"); }
 
         let res3 = client.get(base_url)
-            .header("Cookie", format!("Wilma2SID={}", wilma2sid_))
             .send().expect("Can't baseurl");
 
 
