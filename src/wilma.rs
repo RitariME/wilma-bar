@@ -2,6 +2,7 @@ use crate::schedule;
 use chrono::Datelike;
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
+use reqwest::header::{HeaderMap, COOKIE};
 
 fn find_str(page: &String, start: &str) -> Option<String> {
     let first = page.find(&start)?;
@@ -32,10 +33,17 @@ impl LoginInfo {
             ("submit", "Kirjaudu+sisään"),
             ("SESSIONID", &login_id)
         ];
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            COOKIE,
+            format!("Wilma2LoginID={}", login_id).parse().unwrap(),
+        );
         let res2 = client.post(format!("{}/login", base_url))
+            .headers(headers)
             .form(&params)
             .send().expect("Can't /login");
         let cookie = res2.cookies().last().unwrap();
+
         let wilma2sid_ = String::from(cookie.value());
         if wilma2sid_ == "" { panic!("No wilma2sid, probably wrong credentials"); }
 

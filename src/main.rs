@@ -18,7 +18,7 @@ fn get_schedule() -> Option<Vec<wilma::Schedule>> {
     };
 
 
-    let mut download = false;
+    let mut download = true;
     let dir = format!("{}/.local/share/wilma-bar", std::env::var("HOME").unwrap());
     let date_now = chrono::Local::now().naive_local().date();
     let dir_exist = fs::metadata(&dir).is_ok();
@@ -41,12 +41,12 @@ fn get_schedule() -> Option<Vec<wilma::Schedule>> {
     if download == true && internet == true {
         fs::write(format!("{}/time", &dir), date_now.format("%Y-%m-%d").to_string()).unwrap();
 
-        let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap();
+        let login_info = wilma::LoginInfo::login(user, password, base_url).unwrap(); //add error handling
         let mut data = wilma::Schedule::new(&login_info.wilma2sid, &login_info.formkey, &base_url);
         for lesson in &mut data {
             let (start_str,end_str) = lesson.time.split_once('-').unwrap();
-            if start_str == "11:00" && end_str == "12:15" {
-                lesson.time = "11:00-12:40".to_string();
+            if start_str == "11:00" && end_str == "12:40" {
+                lesson.time = "11:15-12:30".to_string();
             }
         }
 
